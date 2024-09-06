@@ -21,7 +21,7 @@ class _HomeViewState extends State<HomeView> {
         ),
         backgroundColor: Colors.blue,
       ),
-      body: ClimbingWallWidget(
+      body: const ClimbingWallWidget(
         rows: 10,
         columns: 10,
       ),

@@ -5,4 +5,9 @@ class HoldCoords {
   });
   final int row;
   final int column;
+
+  @override
+  String toString() {
+    return 'HoldCoord($row,$column)';
+  }
 }

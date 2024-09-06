@@ -1,3 +1,4 @@
+import 'package:climbing_wall/hold_coords.dart';
 import 'package:flutter/material.dart';
 
 import 'const.dart';
@@ -7,12 +8,12 @@ import 'widgets/vertical_wall_widget.dart';
 class ClimbingWallWidget extends StatefulWidget {
   const ClimbingWallWidget({
     super.key,
-    this.color,
     required this.rows,
     required this.columns,
+    this.backgroundColor,
   });
 
-  final Color? color;
+  final Color? backgroundColor;
   final int rows, columns;
 
   @override
@@ -26,36 +27,57 @@ class _ClimbingWallWidgetState extends State<ClimbingWallWidget> {
 
   @override
   void didChangeDependencies() {
-    super.didChangeDependencies();
     setScreenWallSize();
+    super.didChangeDependencies();
   }
 
   void setScreenWallSize() {
     screenSize = MediaQuery.of(context).size;
     setState(() {
-      verticalHoldSize = screenSize.width / widget.columns;
-      horizontalHoldSize = screenSize.height / widget.rows;
+      verticalHoldSize = widget.columns > 0
+          ? screenSize.width / widget.columns
+          : kDefaultHoldSize;
+      horizontalHoldSize =
+          widget.rows > 0 ? screenSize.height / widget.rows : kDefaultHoldSize;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    print(verticalHoldSize);
     return Container(
       width: screenSize.width,
       height: screenSize.height,
-      color: widget.color ?? Colors.white,
+      color: widget.backgroundColor ?? Colors.white,
       child: widget.columns >= widget.rows
           ? VerticalWall(
               rows: widget.rows,
               columns: widget.columns,
               verticalHoldSize: verticalHoldSize,
-              exceptions: [],
+              wallSize: Size(
+                screenSize.width,
+                screenSize.height,
+              ),
+              exceptions: [
+                HoldCoords(
+                  row: 3,
+                  column: 2,
+                ),
+              ],
+              onPressed: (hold) {
+                print(hold.toString());
+              },
             )
           : HorizontalWall(
               rows: widget.rows,
               columns: widget.columns,
               horizontalHoldSize: horizontalHoldSize,
+              wallSize: Size(
+                screenSize.width,
+                screenSize.height,
+              ),
+              onPressed: (hold) {
+                print(hold.toString());
+              },
             ),
     );
   }

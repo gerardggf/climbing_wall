@@ -10,12 +10,16 @@ class VerticalWall extends ConsumerStatefulWidget {
     required this.rows,
     required this.columns,
     required this.verticalHoldSize,
+    required this.wallSize,
     this.exceptions,
+    this.onPressed,
   });
 
   final int rows, columns;
   final double verticalHoldSize;
   final List<HoldCoords>? exceptions;
+  final Size wallSize;
+  final Function(HoldCoords hold)? onPressed;
 
   @override
   ConsumerState<VerticalWall> createState() => _NormalVerticalWallWidgetState();
@@ -24,11 +28,8 @@ class VerticalWall extends ConsumerStatefulWidget {
 class _NormalVerticalWallWidgetState extends ConsumerState<VerticalWall> {
   @override
   Widget build(BuildContext context) {
-    print(widget.verticalHoldSize);
     return ListView.builder(
-      cacheExtent: double.infinity,
       physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.all(5),
       itemCount: widget.rows,
       itemBuilder: (_, int indexRow) {
         return SizedBox(
@@ -44,12 +45,29 @@ class _NormalVerticalWallWidgetState extends ConsumerState<VerticalWall> {
                           .where((e) =>
                               e.row == indexRow && e.column == indexColumn)
                           .isNotEmpty) {
-                    return const SizedBox();
+                    return Hold.empty(
+                      radius: widget.verticalHoldSize,
+                      child: Text(
+                        '$indexRow,$indexColumn',
+                      ),
+                    );
                   }
-                  return Hold(
-                    radius: widget.verticalHoldSize,
-                    child: Text(
-                      '$indexRow,$indexColumn',
+                  return InkWell(
+                    borderRadius: BorderRadius.circular(50),
+                    onTap: () {
+                      if (widget.onPressed == null) return;
+                      widget.onPressed!(
+                        HoldCoords(
+                          row: indexRow,
+                          column: indexColumn,
+                        ),
+                      );
+                    },
+                    child: Hold(
+                      radius: widget.verticalHoldSize,
+                      child: Text(
+                        '$indexRow,$indexColumn',
+                      ),
                     ),
                   );
                 },

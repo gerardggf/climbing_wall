@@ -8,12 +8,16 @@ class HorizontalWall extends StatefulWidget {
     required this.rows,
     required this.columns,
     required this.horizontalHoldSize,
+    required this.wallSize,
     this.exceptions,
+    this.onPressed,
   });
 
   final int rows, columns;
   final double horizontalHoldSize;
   final List<HoldCoords>? exceptions;
+  final Size wallSize;
+  final Function(HoldCoords hold)? onPressed;
 
   @override
   State<HorizontalWall> createState() => _HorizontalWallState();
@@ -23,9 +27,7 @@ class _HorizontalWallState extends State<HorizontalWall> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      cacheExtent: double.infinity,
       physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.all(5),
       scrollDirection: Axis.horizontal,
       itemCount: widget.columns,
       itemBuilder: (_, int indexColumn) {
@@ -42,12 +44,26 @@ class _HorizontalWallState extends State<HorizontalWall> {
                           .where((e) =>
                               e.row == indexRow && e.column == indexColumn)
                           .isNotEmpty) {
-                    return const SizedBox();
+                    return Hold.empty(
+                      radius: widget.horizontalHoldSize,
+                    );
                   }
-                  return Hold(
-                    radius: widget.horizontalHoldSize,
-                    child: Text(
-                      '$indexRow,$indexColumn',
+                  return InkWell(
+                    borderRadius: BorderRadius.circular(50),
+                    onTap: () {
+                      if (widget.onPressed == null) return;
+                      widget.onPressed!(
+                        HoldCoords(
+                          row: indexRow,
+                          column: indexColumn,
+                        ),
+                      );
+                    },
+                    child: Hold(
+                      radius: widget.horizontalHoldSize,
+                      child: Text(
+                        '$indexRow,$indexColumn',
+                      ),
                     ),
                   );
                 },
