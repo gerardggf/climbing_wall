@@ -13,6 +13,9 @@ class VerticalWall extends ConsumerStatefulWidget {
     required this.wallSize,
     this.exceptions,
     this.onPressed,
+    this.holdChild,
+    this.holdColor,
+    this.defaultHoldColor,
   });
 
   final int rows, columns;
@@ -20,6 +23,9 @@ class VerticalWall extends ConsumerStatefulWidget {
   final List<HoldCoords>? exceptions;
   final Size wallSize;
   final Function(HoldCoords hold)? onPressed;
+  final Widget Function(HoldCoords coords)? holdChild;
+  final Color? Function(HoldCoords hold)? holdColor;
+  final Color? defaultHoldColor;
 
   @override
   ConsumerState<VerticalWall> createState() => _NormalVerticalWallWidgetState();
@@ -65,9 +71,23 @@ class _NormalVerticalWallWidgetState extends ConsumerState<VerticalWall> {
                     },
                     child: Hold(
                       radius: widget.verticalHoldSize,
-                      child: Text(
-                        '$indexRow,$indexColumn',
-                      ),
+                      color: widget.holdColor == null
+                          ? null
+                          : widget.holdColor!(
+                              HoldCoords(
+                                row: indexRow,
+                                column: indexColumn,
+                              ),
+                            ),
+                      defaultColor: widget.defaultHoldColor ?? Colors.grey,
+                      child: widget.holdChild == null
+                          ? null
+                          : widget.holdChild!(
+                              HoldCoords(
+                                row: indexRow,
+                                column: indexColumn,
+                              ),
+                            ),
                     ),
                   );
                 },

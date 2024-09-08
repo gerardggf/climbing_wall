@@ -10,4 +10,15 @@ class HoldCoords {
   String toString() {
     return 'HoldCoord($row,$column)';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (other is HoldCoords) {
+      return other.row == row && other.column == column;
+    }
+    return false;
+  }
+
+  @override
+  int get hashCode => Object.hash(row, column);
 }

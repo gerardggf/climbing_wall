@@ -5,12 +5,14 @@ class Hold extends StatelessWidget {
   const Hold({
     super.key,
     required this.radius,
+    required this.defaultColor,
     this.onPressed,
     this.color,
     this.child,
   });
   final double radius;
   final Color? color;
+  final Color defaultColor;
   final Widget? child;
   final Function(HoldCoords hold)? onPressed;
 
@@ -23,7 +25,7 @@ class Hold extends StatelessWidget {
         margin: const EdgeInsets.all(2),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: color ?? Colors.grey,
+          color: color ?? defaultColor,
         ),
         child: child == null
             ? null
